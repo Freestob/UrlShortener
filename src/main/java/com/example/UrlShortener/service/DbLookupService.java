@@ -14,13 +14,16 @@ public class DbLookupService {
     @PersistenceContext
     private EntityManager em;
 
-    public String findUrlByShorName(String shortUrl) {
+    public String findUrlByShortName(String shortUrl) {
         Query query = em.createQuery("SELECT c FROM UrlShortener c WHERE c.shortUrl = :shortUrl");
         query.setParameter("shortUrl", shortUrl);
 
-       UrlShortener urlShortener = (UrlShortener) query.getResultList().get(0);
-       return urlShortener.getUrl();
-
-
+       UrlShortener urlShortener = (UrlShortener) query.getSingleResult();
+       if (urlShortener != null) {
+           return urlShortener.getUrl();
+       }
+       else {
+           return null;
+       }
     }
 }

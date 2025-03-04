@@ -1,6 +1,8 @@
 package com.example.UrlShortener.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "urlShortener")
@@ -10,9 +12,13 @@ public class UrlShortener {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Setter
+    @Getter
     @Column(nullable = false)
     private String url;
 
+    @Setter
+    @Getter
     @Column(nullable = false)
     private String shortUrl;
 
@@ -21,15 +27,8 @@ public class UrlShortener {
     // Getters
     public Long getId() {return id;}
 
-    public String getUrl() {return url;}
-
-    public String getShortUrl() {return shortUrl;}
-
     // Setters
 
     public void setId(Long id) {this.id = id;}
 
-    public void setUrl(String url) {this.url = url;}
-
-    public void setShortUrl(String shortUrl) {this.shortUrl = shortUrl;}
 }

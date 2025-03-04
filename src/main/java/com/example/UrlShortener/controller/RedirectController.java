@@ -1,14 +1,13 @@
 package com.example.UrlShortener.controller;
 
+import com.example.UrlShortener.exception.ErrorResponse;
+import com.example.UrlShortener.exception.UrlNotFoundException;
 import com.example.UrlShortener.service.UrlShortenerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -23,7 +22,7 @@ public class RedirectController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Void> redirect(@RequestParam String shortUrl)  {
+    public ResponseEntity<Void> redirect(@RequestParam String shortUrl) throws UrlNotFoundException {
         String url = urlShortenerService.getUrlFromShort(shortUrl).getBody();
 
         HttpHeaders headers = new HttpHeaders();
@@ -31,8 +30,9 @@ public class RedirectController {
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello(){
-        return new ResponseEntity<>("Hello World!", HttpStatus.OK);
+    @ExceptionHandler(value = UrlNotFoundException.class)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ErrorResponse handleUrlNotFoundException(UrlNotFoundException e) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
     }
 }
